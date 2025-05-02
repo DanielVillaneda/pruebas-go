@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh '''
                 for dir in $(find . -type f -name '*.go' -exec dirname {} \\; | sort -u); do
-                    if [ "$dir" != "gotypes/doc" ]; then
+                    if [[ "$dir" != "gotypes/doc" ]]; then
                         echo "Compilando $dir..."
                         go build "$dir" || exit 1
                     else
@@ -32,10 +32,7 @@ pipeline {
 
         stage('Ejecutar pruebas') {
             steps {
-                sh '''
-                mkdir -p reports
-                go test -v ./... 2>&1 | go-junit-report > reports/report.xml
-                '''
+                sh 'go test ./...'
             }
         }
     }
@@ -43,7 +40,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline finalizado.'
-            junit 'reports/report.xml'
         }
         failure {
             echo 'Error en la compilación o pruebas.'
