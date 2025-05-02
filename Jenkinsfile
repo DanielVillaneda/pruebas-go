@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh '''
                 for dir in $(find . -type f -name '*.go' -exec dirname {} \\; | sort -u); do
-                    if [[ "$dir" != "gotypes/doc" ]]; then
+                    if [ "$dir" != "gotypes/doc" ]; then
                         echo "Compilando $dir..."
                         go build "$dir" || exit 1
                     else
