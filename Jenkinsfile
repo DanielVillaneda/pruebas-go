@@ -32,7 +32,10 @@ pipeline {
 
         stage('Ejecutar pruebas') {
             steps {
-                sh 'go test ./...'
+                sh '''
+                mkdir -p reports
+                go test -v ./... 2>&1 | go-junit-report > reports/report.xml
+                '''
             }
         }
     }
@@ -40,6 +43,7 @@ pipeline {
     post {
         always {
             echo 'Pipeline finalizado.'
+            junit 'reports/report.xml'
         }
         failure {
             echo 'Error en la compilación o pruebas.'
