@@ -48,10 +48,10 @@ func main() {
 
 	// Find the path from the root of the AST to the object's position.
 	// Walk up to the enclosing ast.Decl for the doc comment.
+	pos := obj.Pos()
 	for _, file := range pkg.Syntax {
-		pos := obj.Pos()
-		if !(file.FileStart <= pos && pos < file.FileEnd) {
-			continue // not in this file
+		if pkg.Fset.File(file.Pos()) != pkg.Fset.File(pos) {
+			continue // obj is not in this file
 		}
 		path, _ := astutil.PathEnclosingInterval(file, pos, pos)
 		for _, n := range path {
